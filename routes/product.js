@@ -29,11 +29,12 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { college, category, status, search, sortBy, sortOrder, minPrice, maxPrice } = req.query;
+    const { college, category, status, search, sortBy, sortOrder, minPrice, maxPrice, user } = req.query;
     const filter = {};
     if (college) filter.college = college;
     if (category) filter.category = category;
     if (status) filter.status = status;
+    if (user) filter.seller = user;
     if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
     if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
     if (search) {
