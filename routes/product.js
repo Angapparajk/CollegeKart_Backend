@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const express = require('express');
 const Product = require('../models/Product');
+const multer = require('multer');
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 function auth(req, res, next) {
@@ -17,9 +19,14 @@ function auth(req, res, next) {
   }
 }
 
-router.post('/', async (req, res) => {
+router.post('/', upload.single('images'), async (req, res) => {
   try {
-    const product = new Product(req.body);
+    const productData = req.body;
+    if (req.file) {
+      // Store image as base64 string
+      productData.images = [req.file.buffer.toString('base64')];
+    }
+    const product = new Product(productData);
     await product.save();
     res.status(201).json(product);
   } catch (err) {
