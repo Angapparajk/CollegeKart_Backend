@@ -26,6 +26,12 @@ router.post('/', upload.single('images'), async (req, res) => {
       // Store image as base64 string
       productData.images = [req.file.buffer.toString('base64')];
     }
+    // Convert price to number
+    if (productData.price) productData.price = Number(productData.price);
+    // Validate required fields
+    if (!productData.title || !productData.price || !productData.college || !productData.seller) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
     const product = new Product(productData);
     await product.save();
     res.status(201).json(product);
